@@ -1,0 +1,15 @@
+﻿export const queryKeys = {
+  me: ['auth', 'me'] as const,
+  needed: ['supply', 'demand'] as const,
+  orders: ['orders'] as const,
+  order: (id: string | number) => ['orders', id] as const,
+  inway: ['observables', 'inway'] as const,
+  fullfillstock: ['observables', 'stock'] as const,
+  fullfill: ['fullfill'] as const,
+  fullfillById: (id: string | number) => ['fullfill', id] as const,
+  suppliers: (search: string) => ['suppliers', search] as const,
+  supplier: (id: string | number) => ['suppliers', id] as const,
+  warehouses: (mp: string) => ['warehouses', mp] as const,
+  observables: (search: string) => ['observables', search] as const,
+  observable: (id: string | number) => ['observable', id] as const,
+};
