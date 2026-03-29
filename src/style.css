@@ -1,29 +1,99 @@
-﻿@import "tailwindcss";
+﻿@import './vars.css';
+@import 'tailwindcss';
 
-:root {
-  --bg: #f6f7fb;
-  --surface: #ffffff;
-  --text: #111827;
-  --muted: #6b7280;
-  --border: #d1d5db;
-  --primary: #0f766e;
-  --danger: #dc2626;
+* {
+  box-sizing: border-box;
 }
 
-* { box-sizing: border-box; }
+html {
+  background: var(--background);
+}
 
 body {
   margin: 0;
-  font-family: "Manrope", "Segoe UI", sans-serif;
-  color: var(--text);
-  background: radial-gradient(1200px circle at 0% 0%, #d1fae5 0, transparent 35%), var(--bg);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
-button { cursor: pointer; }
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.font-heading {
+  font-family: 'Geist', sans-serif;
+}
+
+.font-caption {
+  font-family: 'Funnel Sans', sans-serif;
+}
+
+.font-data {
+  font-family: 'Geist Mono', monospace;
+}
 
 .page {
-  background: var(--surface);
   border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.82) 100%);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: var(--shadow-gentle);
+}
+
+.page h1,
+.page h2,
+.page h3 {
+  font-family: 'Geist', sans-serif;
+}
+
+.page table {
+  width: 100%;
+}
+
+.page th {
+  font-family: 'Funnel Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.85);
+}
+
+.page td {
+  color: #0f172a;
+}
+
+.page th,
+.page td {
+  border-color: rgba(226, 232, 240, 0.9);
+}
+
+.page input,
+.page select,
+.page textarea {
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 16px;
-  padding: 16px;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.page button,
+.page a.inline-flex,
+.page a.rounded-md,
+.page a.rounded-2xl {
+  transition: all 0.18s ease;
+}
+
+.page button:hover,
+.page a.rounded-md:hover,
+.page a.rounded-2xl:hover {
+  transform: translateY(-1px);
 }

@@ -1,7 +1,9 @@
-﻿import { useAppQuery } from '@/shared/api/colada';
-import { queryKeys } from '@/shared/api/queryKeys';
-import { fullfillService } from '@/shared/api/services/fullfill';
+﻿import { useAppQuery } from '@/shared/composables/useAppQuery';
+import { queryKeys } from '@/shared/composables/queryKeys';
+import { fullfillService } from '@/modules/fullfill/api/fullfill.service';
 
 export function useFullfillListQuery() {
   return useAppQuery({ key: queryKeys.fullfill, query: () => fullfillService.list() });
 }
+
+

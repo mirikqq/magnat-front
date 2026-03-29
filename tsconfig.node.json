@@ -5,5 +5,5 @@
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.ts", "openapi-ts.config.ts", "playwright.config.ts"]
+  "include": ["vite.config.ts", "openapi-ts.config.ts"]
 }

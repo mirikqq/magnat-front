@@ -1,7 +1,10 @@
-﻿import { useAppQuery } from '@/shared/api/colada';
-import { queryKeys } from '@/shared/api/queryKeys';
-import { observablesService } from '@/shared/api/services/observables';
+﻿import { computed } from 'vue';
+import { useAppQuery } from '@/shared/composables/useAppQuery';
 
 export function useObservablesQuery(search = '') {
-  return useAppQuery({ key: queryKeys.observables(search), query: () => observablesService.list(search) });
+  return useAppQuery({
+    key: computed(() => ['observables-unavailable', search]),
+    query: async () => [],
+  });
 }
+

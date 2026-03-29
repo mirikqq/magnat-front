@@ -9,10 +9,21 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+          'table-vendor': ['@tanstack/vue-table'],
+          'feedback-vendor': ['vue-sonner'],
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.ts'],
-    exclude: ['e2e/**', 'node_modules/**'],
+    exclude: ['node_modules/**'],
   },
 });
+

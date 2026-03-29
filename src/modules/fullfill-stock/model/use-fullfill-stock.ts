@@ -1,7 +1,9 @@
-﻿import { useAppQuery } from '@/shared/api/colada';
-import { queryKeys } from '@/shared/api/queryKeys';
-import { observablesService } from '@/shared/api/services/observables';
+﻿import { useAppQuery } from '@/shared/composables/useAppQuery';
+import { queryKeys } from '@/shared/composables/queryKeys';
+import { observablesService } from '@/modules/observables/api/observables.service';
 
 export function useFullfillStockQuery() {
   return useAppQuery({ key: queryKeys.fullfillstock, query: () => observablesService.stock() });
 }
+
+

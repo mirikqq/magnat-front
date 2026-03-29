@@ -1,8 +1,7 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
 export default defineConfig({
-  input: 'http://localhost:8000/api/docs/openapi.json',
-  output: 'src/shared/api/generated',
-  client: 'fetch',
+  input: 'http://46.254.17.203/api/openapi.json',
+  output: 'src/openapi-gen',
   plugins: ['@hey-api/typescript'],
 });
