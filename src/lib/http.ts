@@ -6,6 +6,15 @@ export class ApiError extends Error {
   }
 }
 
+function buildRequestUrl(path: string) {
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${env.apiBaseUrl}${normalizedPath}`;
+}
+
 async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const text = await response.text();
@@ -27,12 +36,14 @@ async function parseResponse<T>(response: Response): Promise<T> {
 export async function http<T>(path: string, init: RequestInit = {}): Promise<T> {
   const token = localStorage.getItem('access_token');
   const headers = new Headers(init.headers);
-  headers.set('Content-Type', 'application/json');
+  if (!headers.has('Content-Type') && init.body) {
+    headers.set('Content-Type', 'application/json');
+  }
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const response = await fetch(`${env.apiBaseUrl}${path}`, {
+  const response = await fetch(buildRequestUrl(path), {
     ...init,
     headers,
   });

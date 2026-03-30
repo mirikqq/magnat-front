@@ -6,8 +6,8 @@
     <div v-else-if="errorText" class="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700">{{ errorText }}</div>
 
     <template v-else>
-      <input v-model="name" class="w-full rounded-md border px-3 py-2" placeholder="Наименование" />
-      <button class="rounded-md bg-slate-900 px-3 py-2 text-white" @click="save">Сохранить</button>
+      <input v-model="name" class="w-full rounded-md border px-2.5 py-1.5 text-sm" placeholder="Наименование" />
+      <button class="rounded-md bg-slate-900 px-2.5 py-1.5 text-sm text-white" @click="save">Сохранить</button>
     </template>
   </section>
 </template>
@@ -60,4 +60,5 @@ async function save() {
   toast.success('Сохранено');
 }
 </script>
+
 

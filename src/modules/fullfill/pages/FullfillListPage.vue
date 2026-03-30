@@ -1,48 +1,33 @@
 ﻿<template>
   <section class="page space-y-4">
     <div class="flex items-center justify-between">
-      <div>
-        <p class="font-caption text-[11px] uppercase tracking-[0.24em] text-slate-500">Fullfill</p>
-        <h1 class="text-2xl font-semibold">Задания ФФ</h1>
-      </div>
-      <RouterLink class="inline-block rounded-2xl border px-3 py-2" to="/fullfill/new?mp=ozon">Создать</RouterLink>
+      <h1 class="text-2xl font-semibold">Задания ФФ</h1>
+      <RouterLink class="inline-block rounded-2xl border px-2.5 py-1.5 text-sm" to="/fullfill/new?mp=ozon">Создать</RouterLink>
     </div>
 
-    <table class="min-w-full border-collapse text-sm">
-      <thead>
-        <tr>
-          <th class="border-b px-3 py-2 text-left">Номер</th>
-          <th class="border-b px-3 py-2 text-left">Создано</th>
-          <th class="border-b px-3 py-2 text-left">Изменено</th>
-          <th class="border-b px-3 py-2 text-left">Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in rows" :key="row.id">
-          <td class="border-b px-3 py-2"><RouterLink :to="`/fullfill/${row.id}`">{{ row.id }} ({{ row.mp?.toUpperCase() || 'OZON' }})</RouterLink></td>
-          <td class="border-b px-3 py-2">{{ formatDate(row.created_at) }}</td>
-          <td class="border-b px-3 py-2">{{ formatDate(row.updated_at) }}</td>
-          <td class="border-b px-3 py-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <button class="rounded-2xl border px-2 py-1" @click="openDelivery(row.id)">В пути</button>
-              <button class="rounded-2xl border px-2 py-1 text-red-600" @click="remove(row.id)">Удалить</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-if="query.error.value" class="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700">Не удалось загрузить список заданий ФФ.</div>
+    <DataTable
+      v-else
+      :columns="columns"
+      :rows="rows"
+      :loading="query.isLoading.value"
+      empty-text="Результаты отсутствуют."
+    />
 
     <div v-if="deliveryModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4" @click.self="closeDelivery">
       <div class="w-full max-w-2xl rounded-[28px] border border-white/60 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.22)]">
         <div class="mb-4 flex items-center justify-between">
-          <div>
-            <p class="font-caption text-[11px] uppercase tracking-[0.24em] text-slate-500">В пути</p>
-            <h2 class="text-xl font-semibold">Задание #{{ activeDeliveryId }}</h2>
-          </div>
-          <button class="rounded-2xl border px-3 py-2" @click="closeDelivery">Закрыть</button>
+          <h2 class="text-xl font-semibold">Задание #{{ activeDeliveryId }}</h2>
+          <button class="rounded-2xl border px-2.5 py-1.5 text-sm" @click="closeDelivery">Закрыть</button>
         </div>
 
-        <div v-if="deliveryLoading" class="rounded-2xl border border-dashed p-6 text-slate-500">Загрузка складов...</div>
+        <div v-if="deliveryLoading" class="space-y-3">
+          <div v-for="index in 3" :key="index" class="flex items-center justify-between rounded-2xl border px-4 py-3">
+            <div class="h-5 w-40 animate-pulse rounded-md bg-slate-200/80" />
+            <div class="h-5 w-10 animate-pulse rounded-md bg-slate-200/80" />
+          </div>
+        </div>
+        <div v-else-if="!deliveryDraft.length" class="py-8 text-center text-sm text-slate-500">Результаты отсутствуют.</div>
         <div v-else class="space-y-3">
           <label v-for="item in deliveryDraft" :key="item.warehouse_name" class="flex items-center justify-between rounded-2xl border px-4 py-3">
             <span>{{ item.warehouse_name }}</span>
@@ -51,8 +36,8 @@
         </div>
 
         <div class="mt-5 flex items-center gap-2">
-          <button class="rounded-2xl bg-slate-900 px-4 py-2 text-white" @click="saveDelivery">Сохранить</button>
-          <button class="rounded-2xl border px-4 py-2" @click="closeDelivery">Отмена</button>
+          <button class="rounded-2xl bg-slate-900 px-3 py-1.5 text-sm text-white" :disabled="!deliveryDraft.length" @click="saveDelivery">Сохранить</button>
+          <button class="rounded-2xl border px-2.5 py-1.5 text-sm" @click="closeDelivery">Отмена</button>
         </div>
       </div>
     </div>
@@ -60,12 +45,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, h, ref } from 'vue';
 import { toast } from 'vue-sonner';
+import { RouterLink } from 'vue-router';
+import { createColumnHelper } from '@tanstack/vue-table';
+import DataTable from '@/components/shared/Table/DataTable.vue';
 import { useAppQuery } from '@/shared/composables/useAppQuery';
 import { queryKeys } from '@/shared/composables/queryKeys';
 import { fullfillService } from '@/modules/fullfill/api/fullfill.service';
-import { formatDate } from '@/lib/format';
+import { formatDate, formatNumber } from '@/lib/format';
 
 const query = useAppQuery({ key: queryKeys.fullfill, query: () => fullfillService.list() });
 const rows = computed(() => query.data.value ?? []);
@@ -73,6 +61,75 @@ const deliveryModalOpen = ref(false);
 const deliveryLoading = ref(false);
 const activeDeliveryId = ref<number | null>(null);
 const deliveryDraft = ref<Array<{ warehouse_name: string; in_delivery: boolean }>>([]);
+const columnHelper = createColumnHelper<any>();
+
+const columns = [
+  columnHelper.accessor('id', {
+    header: 'Номер',
+    size: 130,
+    cell: (info) => h(RouterLink, { to: `/fullfill/${info.row.original.id}`, class: 'font-data text-cyan-700' }, () => `#${info.row.original.id}`),
+  }),
+  columnHelper.accessor('mp', {
+    header: 'МП',
+    size: 100,
+    cell: (info) => String(info.getValue() || 'ozon').toUpperCase(),
+  }),
+  columnHelper.accessor('is_approved', {
+    header: 'Статус',
+    size: 150,
+    cell: (info) => h('span', {
+      class: info.getValue()
+        ? 'inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700'
+        : 'inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700',
+    }, info.getValue() ? 'Применено' : 'Черновик'),
+  }),
+  columnHelper.accessor('liters', {
+    header: 'Литры',
+    size: 110,
+    cell: (info) => formatNumber(Number(info.getValue() ?? 0)),
+  }),
+  columnHelper.accessor('boxes', {
+    header: 'Коробки',
+    size: 110,
+    cell: (info) => formatNumber(Number(info.getValue() ?? 0)),
+  }),
+  columnHelper.accessor('pallets', {
+    header: 'Паллеты',
+    size: 110,
+    cell: (info) => formatNumber(Number(info.getValue() ?? 0)),
+  }),
+  columnHelper.accessor('created_at', {
+    header: 'Создано',
+    size: 180,
+    cell: (info) => formatDate(info.getValue()),
+  }),
+  columnHelper.accessor('updated_at', {
+    header: 'Изменено',
+    size: 180,
+    cell: (info) => formatDate(info.getValue()),
+  }),
+  columnHelper.display({
+    id: 'actions',
+    header: 'Действия',
+    size: 180,
+    cell: (info) => h('div', { class: 'flex flex-wrap items-center gap-2' }, [
+      h('button', {
+        class: 'rounded-2xl border px-2 py-1 text-sm',
+        onClick: async (event: Event) => {
+          event.stopPropagation();
+          await openDelivery(info.row.original.id);
+        },
+      }, 'В пути'),
+      h('button', {
+        class: 'rounded-2xl border px-2 py-1 text-sm text-red-600',
+        onClick: async (event: Event) => {
+          event.stopPropagation();
+          await remove(info.row.original.id);
+        },
+      }, 'Удалить'),
+    ]),
+  }),
+];
 
 async function remove(id: number) {
   if (!confirm('Удалить задание?')) return;

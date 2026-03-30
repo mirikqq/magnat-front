@@ -97,3 +97,14 @@ textarea {
 .page a.rounded-2xl:hover {
   transform: translateY(-1px);
 }
+
+.table-fade-enter-active,
+.table-fade-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.table-fade-enter-from,
+.table-fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}

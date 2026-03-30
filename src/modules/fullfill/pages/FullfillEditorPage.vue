@@ -4,37 +4,45 @@
 
     <div class="rounded-md border p-3">
       <div class="mb-3 flex items-center gap-2">
-        <button class="rounded-md border px-3 py-2" @click="autoDistribute">Распределить</button>
-        <button class="rounded-md border px-3 py-2" @click="save">Сохранить</button>
-        <button class="rounded-md border px-3 py-2" :disabled="approved" @click="apply">Применить к остаткам</button>
+        <button class="rounded-md border px-2.5 py-1.5 text-sm" @click="autoDistribute">Распределить</button>
+        <button class="rounded-md border px-2.5 py-1.5 text-sm" :disabled="!rows.length || isLoading" @click="save">Сохранить</button>
+        <button class="rounded-md border px-2.5 py-1.5 text-sm" :disabled="approved || !rows.length || isLoading" @click="apply">Применить к остаткам</button>
       </div>
       <p class="text-sm text-slate-600">Литры: {{ logistics.liters.toFixed(2) }} · Коробки: {{ logistics.boxes.toFixed(2) }} · Паллеты: {{ logistics.pallets.toFixed(2) }}</p>
     </div>
 
-    <table class="min-w-full border-collapse text-sm">
-      <thead>
-        <tr>
-          <th class="border-b px-3 py-2 text-left">Артикул</th>
-          <th class="border-b px-3 py-2 text-left">Кол-во товара</th>
-          <th class="border-b px-3 py-2 text-left">К отгр.</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in rows" :key="item.id">
-          <td class="border-b px-3 py-2">{{ item.observable_item_id }}</td>
-          <td class="border-b px-3 py-2">{{ item.qty }}</td>
-          <td class="border-b px-3 py-2"><input v-model.number="draft[item.id]" class="w-24 rounded border px-2 py-1" type="number" min="0" :disabled="approved" /></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="overflow-auto">
+      <table class="min-w-full border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left">Артикул</th>
+            <th class="border-b px-3 py-2 text-left">Кол-во товара</th>
+            <th class="border-b px-3 py-2 text-left">К отгр.</th>
+          </tr>
+        </thead>
+        <Transition name="table-fade" mode="out-in">
+          <TableSkeletonRows v-if="isLoading" key="loading" :columns="3" :rows="4" />
+          <tbody v-else-if="rows.length" key="rows">
+            <tr v-for="item in rows" :key="item.id">
+              <td class="border-b px-3 py-2">{{ item.observable_item_id }}</td>
+              <td class="border-b px-3 py-2">{{ item.qty }}</td>
+              <td class="border-b px-3 py-2"><input v-model.number="draft[item.id]" class="w-24 rounded border px-2 py-1" type="number" min="0" :disabled="approved" /></td>
+            </tr>
+          </tbody>
+          <tbody v-else key="empty" />
+        </Transition>
+      </table>
+    </div>
+    <div v-if="!isLoading && !rows.length" class="py-10 text-center text-sm text-slate-500">Результаты отсутствуют.</div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, watchEffect } from 'vue';
+import { computed, reactive, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { toast } from 'vue-sonner';
 
+import TableSkeletonRows from '@/components/shared/Table/TableSkeletonRows.vue';
 import { fullfillService } from '@/modules/fullfill/api/fullfill.service';
 import { calcLogistics } from '@/lib/math';
 
@@ -44,18 +52,24 @@ const isNew = computed(() => route.path.endsWith('/new'));
 const id = computed(() => route.params.id as string);
 const state = reactive<{ detail: any | null }>({ detail: null });
 const draft = reactive<Record<number, number>>({});
+const isLoading = ref(false);
 
 watchEffect(async () => {
-  if (isNew.value) {
-    const created = await fullfillService.create({ mp: String(route.query.mp ?? 'ozon') });
-    router.replace(`/fullfill/${created.id}`);
-    return;
-  }
+  isLoading.value = true;
+  try {
+    if (isNew.value) {
+      const created = await fullfillService.create({ mp: String(route.query.mp ?? 'ozon') });
+      router.replace(`/fullfill/${created.id}`);
+      return;
+    }
 
-  state.detail = await fullfillService.get(id.value);
-  rows.value.forEach((x: any) => {
-    if (draft[x.id] == null) draft[x.id] = x.qty;
-  });
+    state.detail = await fullfillService.get(id.value);
+    rows.value.forEach((x: any) => {
+      if (draft[x.id] == null) draft[x.id] = x.qty;
+    });
+  } finally {
+    isLoading.value = false;
+  }
 });
 
 const rows = computed<any[]>(() => state.detail?.items ?? []);
@@ -84,6 +98,4 @@ async function apply() {
   toast.success('Применено к остаткам');
 }
 </script>
-
-
 
