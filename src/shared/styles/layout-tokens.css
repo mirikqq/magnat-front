@@ -2,9 +2,9 @@
   --space-1: 4px;
   --space-2: 8px;
   --space-4: 16px;
-  --padding-default: 8px;
-  --gap-default: 8px;
-  --tile-padding: 16px;
+  --padding-default: 24px;
+  --gap-default: 32px;
+  --tile-padding: 24px;
   --radius-base: 8px;
   --button-border: #e2e8f0;
   --accent: #0f172b;

@@ -1,6 +1,6 @@
 <template>
   <section class="page">
-    <Tile class="space-y-4">
+    <div class="tile-surface space-y-4">
       <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 class="text-2xl font-semibold text-slate-950">Поставщики</h1>
@@ -10,20 +10,13 @@
       </div>
 
       <input v-model="search" placeholder="Поиск по названию" class="w-full px-3 py-2 text-sm" />
-    </Tile>
 
-    <Tile v-if="query.error.value" class="border-red-200 bg-red-50 text-red-700">
-      Не удалось загрузить список поставщиков.
-    </Tile>
-
-    <Tile v-else compact>
       <DataTable
         :columns="columns"
         :rows="rows"
         :loading="query.isLoading.value"
-        empty-text="Результаты отсутствуют."
       />
-    </Tile>
+    </div>
 
     <BaseSheet :open="sheetOpen" :title="sheetTitle" :description="sheetDescription" @update:open="handleSheetOpenChange">
       <SupplierForm
@@ -54,7 +47,6 @@ import { createColumnHelper } from '@tanstack/vue-table'
 import DataTable from '@/components/shared/Table/DataTable.vue'
 import { queryKeys } from '@/shared/composables/queryKeys'
 import { useAppQuery } from '@/shared/composables/useAppQuery'
-import Tile from '@/shared/ui/tile/Tile.vue'
 import ColoredButton from '@/shared/ui/button/ColoredButton.vue'
 import TransparentButton from '@/shared/ui/button/TransparentButton.vue'
 import BaseSheet from '@/shared/ui/sheet/BaseSheet.vue'
@@ -81,6 +73,10 @@ const confirmDialog = useAwaitConfirmDialog()
 const query = useAppQuery({
   key: computed(() => queryKeys.suppliers(search.value)),
   query: () => suppliersService.list(search.value),
+})
+
+watch(() => query.error.value, (error) => {
+  if (error) toast.error('Ошибка загрузки поставщиков')
 })
 
 const rows = computed(() => query.data.value ?? [])

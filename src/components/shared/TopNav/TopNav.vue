@@ -10,7 +10,7 @@
           v-for="item in sideMenuRoutes"
           :key="item.path"
           :to="item.path"
-          class="inline-flex h-9 shrink-0 items-center rounded-[var(--radius-base)] border border-[color:var(--button-border)] bg-white px-3 text-sm font-medium text-slate-600"
+          class="inline-flex h-9 shrink-0 items-center justify-center rounded-[var(--radius-base)] border border-[color:var(--button-border)] bg-white px-3 text-sm font-medium text-slate-700"
           active-class="!border-slate-900 !bg-slate-900 !text-white"
         >
           {{ item.label }}
@@ -18,7 +18,7 @@
       </div>
 
       <div v-else class="relative flex items-center justify-end gap-2">
-        <TransparentButton @click="menuOpen = !menuOpen">
+        <TransparentButton size="default" class="!h-9 !px-3" @click="menuOpen = !menuOpen">
           <Menu class="h-4 w-4" />
           <span>Меню</span>
         </TransparentButton>
@@ -31,7 +31,7 @@
             v-for="item in sideMenuRoutes"
             :key="item.path"
             :to="item.path"
-            class="flex w-full items-center rounded-[var(--radius-base)] px-3 py-2 text-sm font-medium text-slate-600"
+            class="flex h-9 w-full items-center rounded-[var(--radius-base)] px-3 text-sm font-medium text-slate-700"
             :class="isActive(item.path) ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 hover:text-slate-950'"
             @click="menuOpen = false"
           >
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <TransparentButton size="sm" @click="logout">Выйти</TransparentButton>
+      <TransparentButton size="default" class="!h-9 !px-3" @click="logout">Выйти</TransparentButton>
     </div>
 
     <div class="pointer-events-none fixed left-[-9999px] top-[-9999px] opacity-0">
@@ -103,7 +103,7 @@ function recomputeNavigationMode() {
   }
 
   const gap = 12
-  const logoutWidth = 92
+  const logoutWidth = 96
   const available = rootWidth - brandWidth - gap - logoutWidth
   showInlineLinks.value = linksWidth <= available || menuWidth > available
 

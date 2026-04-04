@@ -55,8 +55,24 @@ textarea {
 .page {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
   gap: var(--gap-default);
   min-width: 0;
+}
+
+.tile-surface,
+.page > :where(div,section,article,form):not(.fixed):not(.tile-surface):not(.tile) {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--border);
+  background: var(--background-elevated);
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-card);
+  padding: var(--tile-padding);
+  overflow: hidden;
 }
 
 .page h1,
@@ -68,6 +84,7 @@ textarea {
 
 .page table {
   width: 100%;
+  table-layout: fixed;
 }
 
 .page th {

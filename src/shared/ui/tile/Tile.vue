@@ -21,7 +21,7 @@ const props = withDefaults(
 
 const tileClass = computed(() =>
   cn(
-    'rounded-[var(--radius-base)] border border-[color:var(--border)] bg-[color:var(--background-elevated)] shadow-[var(--shadow-card)]',
+    'tile rounded-[var(--radius-base)] border border-[color:var(--border)] bg-[color:var(--background-elevated)] shadow-[var(--shadow-card)]',
     props.compact ? 'p-[var(--padding-default)]' : 'p-[var(--tile-padding)]',
     props.class,
   ),

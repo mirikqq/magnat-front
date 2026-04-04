@@ -1,6 +1,6 @@
-﻿<template>
-  <div class="w-full">
-    <div class="overflow-auto">
+<template>
+  <div class="w-full flex-1 min-h-0">
+    <div class="w-full flex-1 min-h-0">
       <table class="min-w-full border-collapse text-sm">
         <thead class="bg-slate-50/80">
           <tr v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
@@ -19,7 +19,7 @@
           </tr>
         </thead>
         <Transition name="table-fade" mode="out-in">
-          <tbody v-if="loading" key="loading">
+          <tbody v-if="showSkeleton" key="loading">
             <tr v-for="index in skeletonRows" :key="`skeleton-${index}`" class="pointer-events-none">
               <td
                 v-for="column in table.getVisibleLeafColumns()"
@@ -49,46 +49,42 @@
               </td>
             </tr>
           </tbody>
-          <tbody v-else key="empty" />
+          <tbody v-else-if="loading" key="pending" />
+          <TableNotFoundRow v-else key="empty" :colspan="table.getVisibleLeafColumns().length || 1" />
         </Transition>
       </table>
     </div>
-
-    <Transition name="table-fade">
-      <div
-        v-if="!loading && table.getRowModel().rows.length === 0"
-        class="py-10 text-center text-sm text-slate-500"
-      >
-        {{ emptyText }}
-      </div>
-    </Transition>
   </div>
 </template>
 
 <script setup lang="ts" generic="TData">
 import type { ColumnDef, Row } from '@tanstack/vue-table'
 import { FlexRender, getCoreRowModel, useVueTable } from '@tanstack/vue-table'
+import TableNotFoundRow from './TableNotFoundRow.vue'
+import { useDelayedSkeleton } from '@/shared/composables/useDelayedSkeleton'
 
 const props = withDefaults(
   defineProps<{
     columns: ColumnDef<TData, any>[]
     rows: TData[]
-    emptyText?: string
     loading?: boolean
     rowClass?: string
     skeletonRows?: number
+    skeletonDelay?: number
   }>(),
   {
-    emptyText: 'Результаты отсутствуют.',
     loading: false,
     rowClass: '',
     skeletonRows: 3,
+    skeletonDelay: 180,
   },
 )
 
 const emit = defineEmits<{
   (e: 'rowClick', row: Row<TData>): void
 }>()
+
+const showSkeleton = useDelayedSkeleton(() => props.loading, props.skeletonDelay)
 
 const table = useVueTable({
   get data() {
