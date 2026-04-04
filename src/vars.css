@@ -1,22 +1,23 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
+@import './shared/styles/layout-tokens.css';
 
 :root {
-  --background: #edf2f7;
-  --background-elevated: rgba(255, 255, 255, 0.78);
-  --background-soft: rgba(248, 250, 252, 0.9);
+  --background: var(--page-bg);
+  --background-elevated: rgba(255, 255, 255, 0.92);
+  --background-soft: rgba(248, 250, 252, 0.88);
   --foreground: #0f172a;
   --foreground-muted: #475569;
-  --border: rgba(148, 163, 184, 0.24);
-  --border-strong: rgba(148, 163, 184, 0.36);
+  --border: #dbe3ec;
+  --border-strong: #cbd5e1;
   --primary: #0f172a;
-  --primary-soft: #dbeafe;
-  --accent: #0891b2;
-  --accent-soft: #ecfeff;
+  --primary-soft: #e2e8f0;
+  --accent-soft: #e8edf5;
   --danger: #dc2626;
   --danger-soft: #fef2f2;
   --success: #15803d;
   --success-soft: #f0fdf4;
-  --shadow-gentle: 0 20px 60px rgba(15, 23, 42, 0.08);
-  --shadow-soft: 0 10px 30px rgba(15, 23, 42, 0.08);
-  --radius: 24px;
+  --shadow-gentle: 0 18px 48px rgba(15, 23, 42, 0.08);
+  --shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.05);
+  --radius: var(--radius-base);
 }

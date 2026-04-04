@@ -1,52 +1,55 @@
-﻿import { env } from '@/lib/env';
+import { AUTH_STORAGE_KEY } from '@/shared/constants/auth'
+import { env } from '@/lib/env'
 
 export class ApiError extends Error {
   constructor(message: string, public readonly status: number) {
-    super(message);
+    super(message)
   }
 }
 
 function buildRequestUrl(path: string) {
   if (/^https?:\/\//i.test(path)) {
-    return path;
+    return path
   }
 
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  return `${env.apiBaseUrl}${normalizedPath}`;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return `${env.apiBaseUrl}${normalizedPath}`
 }
 
 async function parseResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const text = await response.text();
-    throw new ApiError(text || 'HTTP error', response.status);
+    const text = await response.text()
+    throw new ApiError(text || 'HTTP error', response.status)
   }
 
   if (response.status === 204) {
-    return undefined as T;
+    return undefined as T
   }
 
-  const contentType = response.headers.get('content-type') ?? '';
+  const contentType = response.headers.get('content-type') ?? ''
   if (!contentType.includes('application/json')) {
-    return undefined as T;
+    return undefined as T
   }
 
-  return response.json() as Promise<T>;
+  return response.json() as Promise<T>
 }
 
 export async function http<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const token = localStorage.getItem('access_token');
-  const headers = new Headers(init.headers);
+  const token = localStorage.getItem(AUTH_STORAGE_KEY)
+  const headers = new Headers(init.headers)
+
   if (!headers.has('Content-Type') && init.body) {
-    headers.set('Content-Type', 'application/json');
+    headers.set('Content-Type', 'application/json')
   }
+
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+    headers.set('Authorization', `Bearer ${token}`)
   }
 
   const response = await fetch(buildRequestUrl(path), {
     ...init,
     headers,
-  });
+  })
 
-  return parseResponse<T>(response);
+  return parseResponse<T>(response)
 }

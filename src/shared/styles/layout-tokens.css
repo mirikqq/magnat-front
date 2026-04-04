@@ -1,0 +1,13 @@
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-4: 16px;
+  --padding-default: 8px;
+  --gap-default: 8px;
+  --tile-padding: 16px;
+  --radius-base: 8px;
+  --button-border: #e2e8f0;
+  --accent: #0f172b;
+  --button-gradient: linear-gradient(145deg, #0f172a, #334155);
+  --page-bg: #eef2f6;
+}

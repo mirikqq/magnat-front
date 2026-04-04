@@ -35,9 +35,19 @@ export type AuthMeOut = {
      */
     fio?: string | null;
     /**
-     * Role
+     * Selected Cabinet Id
      */
-    role: string;
+    selected_cabinet_id: number;
+    /**
+     * Cabinets
+     */
+    cabinets: Array<CabinetAccessOut>;
+};
+
+/**
+ * AuthSelectCabinetIn
+ */
+export type AuthSelectCabinetIn = {
     /**
      * Cabinet Id
      */
@@ -59,6 +69,54 @@ export type AuthTokenOut = {
 };
 
 /**
+ * CabinetAccessOut
+ */
+export type CabinetAccessOut = {
+    /**
+     * Id
+     */
+    id: number;
+    /**
+     * Name
+     */
+    name: string;
+    /**
+     * Mp
+     */
+    mp: string;
+    /**
+     * Role
+     */
+    role: string;
+};
+
+/**
+ * DemandByWarehouseRead
+ */
+export type DemandByWarehouseRead = {
+    /**
+     * Observable Item Id
+     */
+    observable_item_id: number;
+    /**
+     * Warehouse Name
+     */
+    warehouse_name: string;
+    /**
+     * Warehouse Priority
+     */
+    warehouse_priority?: number | null;
+    /**
+     * Short Name
+     */
+    short_name?: string | null;
+    /**
+     * Needed
+     */
+    needed?: number | null;
+};
+
+/**
  * ErrorOut
  */
 export type ErrorOut = {
@@ -66,6 +124,16 @@ export type ErrorOut = {
      * Detail
      */
     detail: string;
+};
+
+/**
+ * FullfillCancelIn
+ */
+export type FullfillCancelIn = {
+    /**
+     * Reason
+     */
+    reason: string;
 };
 
 /**
@@ -159,9 +227,9 @@ export type FullfillListItemRead = {
      */
     mp: string;
     /**
-     * Is Approved
+     * Status
      */
-    is_approved: boolean;
+    status: string;
     /**
      * Liters
      */
@@ -251,9 +319,9 @@ export type FullfillRead = {
      */
     mp: string;
     /**
-     * Is Approved
+     * Status
      */
-    is_approved: boolean;
+    status: string;
     /**
      * Liters
      */
@@ -409,6 +477,16 @@ export type ObservableStockRead = {
 };
 
 /**
+ * OrderCancelIn
+ */
+export type OrderCancelIn = {
+    /**
+     * Reason
+     */
+    reason: string;
+};
+
+/**
  * OrderCreateIn
  */
 export type OrderCreateIn = {
@@ -487,9 +565,9 @@ export type OrderListItemRead = {
      */
     id: number;
     /**
-     * Is Approved
+     * Status
      */
-    is_approved: boolean;
+    status: string;
     /**
      * Created At
      */
@@ -509,9 +587,9 @@ export type OrderRead = {
      */
     id: number;
     /**
-     * Is Approved
+     * Status
      */
-    is_approved: boolean;
+    status: string;
     /**
      * Created At
      */
@@ -625,16 +703,6 @@ export type PaginatedSupplyDemandRead = {
 };
 
 /**
- * RecalcLaunchIn
- */
-export type RecalcLaunchIn = {
-    /**
-     * Dbt Select
-     */
-    dbt_select?: string;
-};
-
-/**
  * RecalcLaunchOut
  */
 export type RecalcLaunchOut = {
@@ -683,17 +751,17 @@ export type StockByProductWarehouseRead = {
      */
     visible?: boolean | null;
     /**
-     * Promised Amount
+     * Transit Stock Count
      */
-    promised_amount?: number | null;
+    transit_stock_count?: number | null;
     /**
-     * Free To Sell Amount
+     * Available Stock Count
      */
-    free_to_sell_amount?: number | null;
+    available_stock_count?: number | null;
     /**
-     * Reserved Amount
+     * Requested Stock Count
      */
-    reserved_amount?: number | null;
+    requested_stock_count?: number | null;
     /**
      * Avg Sale
      */
@@ -1066,8 +1134,69 @@ export type MeAuthMeGetResponses = {
 
 export type MeAuthMeGetResponse = MeAuthMeGetResponses[keyof MeAuthMeGetResponses];
 
+export type SelectCabinetAuthSelectCabinetPostData = {
+    body: AuthSelectCabinetIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/select-cabinet';
+};
+
+export type SelectCabinetAuthSelectCabinetPostErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorOut;
+    /**
+     * Forbidden
+     */
+    403: ErrorOut;
+    /**
+     * Not found
+     */
+    404: ErrorOut;
+    /**
+     * Conflict
+     */
+    409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+    /**
+     * Internal server error
+     */
+    500: ErrorOut;
+    /**
+     * External service error
+     */
+    502: ErrorOut;
+};
+
+export type SelectCabinetAuthSelectCabinetPostError = SelectCabinetAuthSelectCabinetPostErrors[keyof SelectCabinetAuthSelectCabinetPostErrors];
+
+export type SelectCabinetAuthSelectCabinetPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: AuthTokenOut;
+};
+
+export type SelectCabinetAuthSelectCabinetPostResponse = SelectCabinetAuthSelectCabinetPostResponses[keyof SelectCabinetAuthSelectCabinetPostResponses];
+
 export type ListSuppliersSuppliersGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: {
         /**
@@ -1134,6 +1263,12 @@ export type ListSuppliersSuppliersGetResponse = ListSuppliersSuppliersGetRespons
 
 export type CreateSupplierSuppliersPostData = {
     body: SupplierCreate;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/suppliers';
@@ -1183,6 +1318,12 @@ export type CreateSupplierSuppliersPostResponse = CreateSupplierSuppliersPostRes
 
 export type DeleteSupplierSuppliersSupplierIdDeleteData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Supplier Id
@@ -1237,6 +1378,12 @@ export type DeleteSupplierSuppliersSupplierIdDeleteResponse = DeleteSupplierSupp
 
 export type UpdateSupplierSuppliersSupplierIdPatchData = {
     body: SupplierUpdate;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Supplier Id
@@ -1289,157 +1436,14 @@ export type UpdateSupplierSuppliersSupplierIdPatchResponses = {
 
 export type UpdateSupplierSuppliersSupplierIdPatchResponse = UpdateSupplierSuppliersSupplierIdPatchResponses[keyof UpdateSupplierSuppliersSupplierIdPatchResponses];
 
-export type LegacySupplyDemandListData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * Page
-         */
-        page?: number;
-        /**
-         * Size
-         */
-        size?: number;
-        /**
-         * Order By
-         */
-        order_by?: string | null;
-        /**
-         * Q
-         */
-        q?: string | null;
-        /**
-         * Supplier Id
-         */
-        supplier_id?: number | null;
-    };
-    url: '/supply-demand';
-};
-
-export type LegacySupplyDemandListErrors = {
-    /**
-     * Bad request
-     */
-    400: ErrorOut;
-    /**
-     * Forbidden
-     */
-    403: ErrorOut;
-    /**
-     * Not found
-     */
-    404: ErrorOut;
-    /**
-     * Conflict
-     */
-    409: ErrorOut;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-    /**
-     * Internal server error
-     */
-    500: ErrorOut;
-    /**
-     * External service error
-     */
-    502: ErrorOut;
-};
-
-export type LegacySupplyDemandListError = LegacySupplyDemandListErrors[keyof LegacySupplyDemandListErrors];
-
-export type LegacySupplyDemandListResponses = {
-    /**
-     * Successful Response
-     */
-    200: PaginatedSupplyDemandRead;
-};
-
-export type LegacySupplyDemandListResponse = LegacySupplyDemandListResponses[keyof LegacySupplyDemandListResponses];
-
-export type LaunchRecalcRecalcPostData = {
-    body: RecalcLaunchIn;
-    path?: never;
-    query?: never;
-    url: '/recalc';
-};
-
-export type LaunchRecalcRecalcPostErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type LaunchRecalcRecalcPostError = LaunchRecalcRecalcPostErrors[keyof LaunchRecalcRecalcPostErrors];
-
-export type LaunchRecalcRecalcPostResponses = {
-    /**
-     * Successful Response
-     */
-    202: RecalcLaunchOut;
-};
-
-export type LaunchRecalcRecalcPostResponse = LaunchRecalcRecalcPostResponses[keyof LaunchRecalcRecalcPostResponses];
-
-export type GetRecalcStatusRecalcRunIdGetData = {
-    body?: never;
-    path: {
-        /**
-         * Run Id
-         */
-        run_id: string;
-    };
-    query?: never;
-    url: '/recalc/{run_id}';
-};
-
-export type GetRecalcStatusRecalcRunIdGetErrors = {
-    /**
-     * Bad request
-     */
-    400: ErrorOut;
-    /**
-     * Forbidden
-     */
-    403: ErrorOut;
-    /**
-     * Not found
-     */
-    404: ErrorOut;
-    /**
-     * Conflict
-     */
-    409: ErrorOut;
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-    /**
-     * Internal server error
-     */
-    500: ErrorOut;
-    /**
-     * External service error
-     */
-    502: ErrorOut;
-};
-
-export type GetRecalcStatusRecalcRunIdGetError = GetRecalcStatusRecalcRunIdGetErrors[keyof GetRecalcStatusRecalcRunIdGetErrors];
-
-export type GetRecalcStatusRecalcRunIdGetResponses = {
-    /**
-     * Successful Response
-     */
-    200: RecalcStatusOut;
-};
-
-export type GetRecalcStatusRecalcRunIdGetResponse = GetRecalcStatusRecalcRunIdGetResponses[keyof GetRecalcStatusRecalcRunIdGetResponses];
-
 export type SupplyDemandListData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: {
         /**
@@ -1484,8 +1488,71 @@ export type SupplyDemandListResponses = {
 
 export type SupplyDemandListResponse = SupplyDemandListResponses[keyof SupplyDemandListResponses];
 
+export type ListDemandByWarehousesSupplyDemandWarehousesGetData = {
+    body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
+    path?: never;
+    query?: never;
+    url: '/supply/demand/warehouses';
+};
+
+export type ListDemandByWarehousesSupplyDemandWarehousesGetErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorOut;
+    /**
+     * Forbidden
+     */
+    403: ErrorOut;
+    /**
+     * Not found
+     */
+    404: ErrorOut;
+    /**
+     * Conflict
+     */
+    409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+    /**
+     * Internal server error
+     */
+    500: ErrorOut;
+    /**
+     * External service error
+     */
+    502: ErrorOut;
+};
+
+export type ListDemandByWarehousesSupplyDemandWarehousesGetError = ListDemandByWarehousesSupplyDemandWarehousesGetErrors[keyof ListDemandByWarehousesSupplyDemandWarehousesGetErrors];
+
+export type ListDemandByWarehousesSupplyDemandWarehousesGetResponses = {
+    /**
+     * Response List Demand By Warehouses Supply Demand Warehouses Get
+     *
+     * Successful Response
+     */
+    200: Array<DemandByWarehouseRead>;
+};
+
+export type ListDemandByWarehousesSupplyDemandWarehousesGetResponse = ListDemandByWarehousesSupplyDemandWarehousesGetResponses[keyof ListDemandByWarehousesSupplyDemandWarehousesGetResponses];
+
 export type RecalcSupplySupplyRecalculatePostData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/supply/recalculate';
@@ -1509,6 +1576,10 @@ export type RecalcSupplySupplyRecalculatePostErrors = {
      */
     409: ErrorOut;
     /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+    /**
      * Internal server error
      */
     500: ErrorOut;
@@ -1531,6 +1602,12 @@ export type RecalcSupplySupplyRecalculatePostResponse = RecalcSupplySupplyRecalc
 
 export type RecalcSupplyStatusSupplyRecalculateStatusRunIdGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Run Id
@@ -1617,6 +1694,12 @@ export type ProductStockStockProductProductSkuGetResponse = ProductStockStockPro
 
 export type SetVisibleStockVisiblePostData = {
     body: StockVisibilitySetIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/stock/visible';
@@ -1666,6 +1749,12 @@ export type SetVisibleStockVisiblePostResponse = SetVisibleStockVisiblePostRespo
 
 export type ListOrdersOrdersGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: {
         /**
@@ -1704,6 +1793,12 @@ export type ListOrdersOrdersGetResponse = ListOrdersOrdersGetResponses[keyof Lis
 
 export type CreateOrderOrdersPostData = {
     body: OrderCreateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/orders';
@@ -1753,6 +1848,12 @@ export type CreateOrderOrdersPostResponse = CreateOrderOrdersPostResponses[keyof
 
 export type DeleteOrderOrdersOrderIdDeleteData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Order Id
@@ -1807,6 +1908,12 @@ export type DeleteOrderOrdersOrderIdDeleteResponse = DeleteOrderOrdersOrderIdDel
 
 export type GetOrderOrdersOrderIdGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Order Id
@@ -1861,6 +1968,12 @@ export type GetOrderOrdersOrderIdGetResponse = GetOrderOrdersOrderIdGetResponses
 
 export type UpdateOrderOrdersOrderIdPatchData = {
     body: OrderUpdateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Order Id
@@ -1915,6 +2028,12 @@ export type UpdateOrderOrdersOrderIdPatchResponse = UpdateOrderOrdersOrderIdPatc
 
 export type ApproveOrderOrdersOrderIdApprovePostData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Order Id
@@ -1967,8 +2086,74 @@ export type ApproveOrderOrdersOrderIdApprovePostResponses = {
 
 export type ApproveOrderOrdersOrderIdApprovePostResponse = ApproveOrderOrdersOrderIdApprovePostResponses[keyof ApproveOrderOrdersOrderIdApprovePostResponses];
 
+export type CancelOrderOrdersOrderIdCancelPostData = {
+    body: OrderCancelIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
+    path: {
+        /**
+         * Order Id
+         */
+        order_id: number;
+    };
+    query?: never;
+    url: '/orders/{order_id}/cancel';
+};
+
+export type CancelOrderOrdersOrderIdCancelPostErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorOut;
+    /**
+     * Forbidden
+     */
+    403: ErrorOut;
+    /**
+     * Not found
+     */
+    404: ErrorOut;
+    /**
+     * Conflict
+     */
+    409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+    /**
+     * Internal server error
+     */
+    500: ErrorOut;
+    /**
+     * External service error
+     */
+    502: ErrorOut;
+};
+
+export type CancelOrderOrdersOrderIdCancelPostError = CancelOrderOrdersOrderIdCancelPostErrors[keyof CancelOrderOrdersOrderIdCancelPostErrors];
+
+export type CancelOrderOrdersOrderIdCancelPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: OrderRead;
+};
+
+export type CancelOrderOrdersOrderIdCancelPostResponse = CancelOrderOrdersOrderIdCancelPostResponses[keyof CancelOrderOrdersOrderIdCancelPostResponses];
+
 export type ListInwayObservablesInwayGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/observables/inway';
@@ -1991,6 +2176,10 @@ export type ListInwayObservablesInwayGetErrors = {
      * Conflict
      */
     409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
     /**
      * Internal server error
      */
@@ -2019,6 +2208,12 @@ export type UpdateInwayObservablesInwayPatchData = {
      * Payload
      */
     body: Array<ObservableInWayUpdate>;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/observables/inway';
@@ -2068,6 +2263,12 @@ export type UpdateInwayObservablesInwayPatchResponse = UpdateInwayObservablesInw
 
 export type ListStockObservablesStockGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/observables/stock';
@@ -2090,6 +2291,10 @@ export type ListStockObservablesStockGetErrors = {
      * Conflict
      */
     409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
     /**
      * Internal server error
      */
@@ -2118,6 +2323,12 @@ export type AddStockObservablesStockPatchData = {
      * Payload
      */
     body: Array<ObservableStockAdd>;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/observables/stock';
@@ -2167,6 +2378,12 @@ export type AddStockObservablesStockPatchResponse = AddStockObservablesStockPatc
 
 export type ListFullfillFullfillGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: {
         /**
@@ -2205,6 +2422,12 @@ export type ListFullfillFullfillGetResponse = ListFullfillFullfillGetResponses[k
 
 export type CreateFullfillFullfillPostData = {
     body: FullfillCreateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path?: never;
     query?: never;
     url: '/fullfill';
@@ -2254,6 +2477,12 @@ export type CreateFullfillFullfillPostResponse = CreateFullfillFullfillPostRespo
 
 export type NewFullfillDataFullfillNewMpGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Mp
@@ -2310,6 +2539,12 @@ export type NewFullfillDataFullfillNewMpGetResponse = NewFullfillDataFullfillNew
 
 export type DeleteFullfillFullfillFullfillIdDeleteData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2364,6 +2599,12 @@ export type DeleteFullfillFullfillFullfillIdDeleteResponse = DeleteFullfillFullf
 
 export type GetFullfillFullfillFullfillIdGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2418,6 +2659,12 @@ export type GetFullfillFullfillFullfillIdGetResponse = GetFullfillFullfillFullfi
 
 export type UpdateFullfillFullfillFullfillIdPatchData = {
     body: FullfillUpdateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2470,8 +2717,14 @@ export type UpdateFullfillFullfillFullfillIdPatchResponses = {
 
 export type UpdateFullfillFullfillFullfillIdPatchResponse = UpdateFullfillFullfillFullfillIdPatchResponses[keyof UpdateFullfillFullfillFullfillIdPatchResponses];
 
-export type ApproveFullfillFullfillFullfillIdApprovePostData = {
+export type ApplyFullfillFullfillFullfillIdApplyPostData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2479,10 +2732,10 @@ export type ApproveFullfillFullfillFullfillIdApprovePostData = {
         fullfill_id: number;
     };
     query?: never;
-    url: '/fullfill/{fullfill_id}/approve';
+    url: '/fullfill/{fullfill_id}/apply';
 };
 
-export type ApproveFullfillFullfillFullfillIdApprovePostErrors = {
+export type ApplyFullfillFullfillFullfillIdApplyPostErrors = {
     /**
      * Bad request
      */
@@ -2513,19 +2766,85 @@ export type ApproveFullfillFullfillFullfillIdApprovePostErrors = {
     502: ErrorOut;
 };
 
-export type ApproveFullfillFullfillFullfillIdApprovePostError = ApproveFullfillFullfillFullfillIdApprovePostErrors[keyof ApproveFullfillFullfillFullfillIdApprovePostErrors];
+export type ApplyFullfillFullfillFullfillIdApplyPostError = ApplyFullfillFullfillFullfillIdApplyPostErrors[keyof ApplyFullfillFullfillFullfillIdApplyPostErrors];
 
-export type ApproveFullfillFullfillFullfillIdApprovePostResponses = {
+export type ApplyFullfillFullfillFullfillIdApplyPostResponses = {
     /**
      * Successful Response
      */
     200: FullfillRead;
 };
 
-export type ApproveFullfillFullfillFullfillIdApprovePostResponse = ApproveFullfillFullfillFullfillIdApprovePostResponses[keyof ApproveFullfillFullfillFullfillIdApprovePostResponses];
+export type ApplyFullfillFullfillFullfillIdApplyPostResponse = ApplyFullfillFullfillFullfillIdApplyPostResponses[keyof ApplyFullfillFullfillFullfillIdApplyPostResponses];
+
+export type CancelFullfillFullfillFullfillIdCancelPostData = {
+    body: FullfillCancelIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
+    path: {
+        /**
+         * Fullfill Id
+         */
+        fullfill_id: number;
+    };
+    query?: never;
+    url: '/fullfill/{fullfill_id}/cancel';
+};
+
+export type CancelFullfillFullfillFullfillIdCancelPostErrors = {
+    /**
+     * Bad request
+     */
+    400: ErrorOut;
+    /**
+     * Forbidden
+     */
+    403: ErrorOut;
+    /**
+     * Not found
+     */
+    404: ErrorOut;
+    /**
+     * Conflict
+     */
+    409: ErrorOut;
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+    /**
+     * Internal server error
+     */
+    500: ErrorOut;
+    /**
+     * External service error
+     */
+    502: ErrorOut;
+};
+
+export type CancelFullfillFullfillFullfillIdCancelPostError = CancelFullfillFullfillFullfillIdCancelPostErrors[keyof CancelFullfillFullfillFullfillIdCancelPostErrors];
+
+export type CancelFullfillFullfillFullfillIdCancelPostResponses = {
+    /**
+     * Successful Response
+     */
+    200: FullfillRead;
+};
+
+export type CancelFullfillFullfillFullfillIdCancelPostResponse = CancelFullfillFullfillFullfillIdCancelPostResponses[keyof CancelFullfillFullfillFullfillIdCancelPostResponses];
 
 export type GetDeliveryFullfillFullfillIdDeliveryGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2580,6 +2899,12 @@ export type GetDeliveryFullfillFullfillIdDeliveryGetResponse = GetDeliveryFullfi
 
 export type SetDeliveryFullfillFullfillIdDeliveryPostData = {
     body: FullfillDeliveryUpdateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Fullfill Id
@@ -2634,6 +2959,12 @@ export type SetDeliveryFullfillFullfillIdDeliveryPostResponse = SetDeliveryFullf
 
 export type ListWarehousesWarehousesMpGetData = {
     body?: never;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Mp
@@ -2690,6 +3021,12 @@ export type ListWarehousesWarehousesMpGetResponse = ListWarehousesWarehousesMpGe
 
 export type UpdateWarehousesWarehousesMpPatchData = {
     body: WarehousesUpdateIn;
+    headers?: {
+        /**
+         * Authorization
+         */
+        authorization?: string | null;
+    };
     path: {
         /**
          * Mp

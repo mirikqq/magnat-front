@@ -1,4 +1,4 @@
-﻿import type { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 export const suppliersModule: { routes: RouteRecordRaw[] } = {
   routes: [
@@ -9,13 +9,11 @@ export const suppliersModule: { routes: RouteRecordRaw[] } = {
     },
     {
       path: '/suppliers/new',
-      name: 'SupplierCreate',
-      component: () => import('./pages/SupplierEditorPage.vue'),
+      redirect: '/suppliers?mode=create',
     },
     {
       path: '/suppliers/:id',
-      name: 'Supplier',
-      component: () => import('./pages/SupplierEditorPage.vue'),
+      redirect: (to) => `/suppliers?edit=${to.params.id}`,
     },
   ],
 }

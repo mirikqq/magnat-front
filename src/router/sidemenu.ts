@@ -1,6 +1,6 @@
-﻿export const sideMenuRoutes = [
+export const sideMenuRoutes = [
   { path: '/needed', label: 'Потребность' },
-  { path: '/orders', label: 'Заказы поставщикам' },
+  { path: '/orders', label: 'Заказы' },
   { path: '/inway', label: 'В пути' },
   { path: '/fullfillstock', label: 'Остатки ФФ' },
   { path: '/fullfill', label: 'Задания ФФ' },

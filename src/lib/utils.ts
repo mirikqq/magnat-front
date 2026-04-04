@@ -1,6 +1,14 @@
-﻿export function toNumber(value: number | string | null | undefined): number {
-  if (typeof value === 'number') return value
-  if (!value) return 0
-  const parsed = Number(String(value).replace(',', '.'))
-  return Number.isNaN(parsed) ? 0 : parsed
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+export function toNumber(value: string | number | null | undefined) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0
+  if (typeof value !== 'string') return 0
+  const normalized = value.replace(',', '.').trim()
+  const parsed = Number(normalized)
+  return Number.isFinite(parsed) ? parsed : 0
 }

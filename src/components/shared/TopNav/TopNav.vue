@@ -1,59 +1,46 @@
-﻿<template>
-  <div ref="rootRef" class="relative z-10 flex min-w-0 gap-4 overflow-visible items-center">
-    <div
-      ref="brandRef"
-      class="shrink-0 py-[8px] px-[12px] whitespace-nowrap flex items-center justify-center rounded-2xl bg-[linear-gradient(145deg,#0f172a,#334155)] text-sm font-semibold tracking-[0.2em] text-white shadow-[0_10px_30px_rgba(15,23,42,0.25)]"
-    >
-      MAGNAT
+<template>
+  <div ref="rootRef" class="relative flex min-w-0 items-center gap-3 overflow-visible">
+    <div ref="brandRef" class="shrink-0">
+      <BrandLogo compact />
     </div>
 
-    <div class="ml-auto min-w-0 flex-1">
+    <div class="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2">
       <div v-if="showInlineLinks" class="flex min-w-0 items-center justify-end gap-2 overflow-visible whitespace-nowrap">
         <RouterLink
           v-for="item in sideMenuRoutes"
           :key="item.path"
           :to="item.path"
-          class="h-[36px] inline-flex shrink-0 rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 transition hover:-translate-y-[1px] hover:border-slate-300 hover:text-slate-950"
+          class="inline-flex h-9 shrink-0 items-center rounded-[var(--radius-base)] border border-[color:var(--button-border)] bg-white px-3 text-sm font-medium text-slate-600"
           active-class="!border-slate-900 !bg-slate-900 !text-white"
         >
           {{ item.label }}
         </RouterLink>
       </div>
 
-      <div v-else class="flex items-center justify-end">
-        <div class="relative z-[120]">
-          <button
-            ref="menuButtonRef"
-            type="button"
-            class="py-[8px] px-[12px] h-[36px] px inline-flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/92 px-4 py-2 text-sm font-medium text-slate-700 shadow-[0_12px_30px_rgba(15,23,42,0.08)] transition hover:-translate-y-[1px] hover:border-slate-300 hover:text-slate-950"
-            :class="{ '!border-slate-900 !bg-slate-900 !text-white shadow-[0_12px_30px_rgba(15,23,42,0.16)]': hasActiveRoute || menuOpen }"
-            @click="menuOpen = !menuOpen"
-          >
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="4" y1="18" x2="20" y2="18" />
-            </svg>
-            <span>Меню</span>
-          </button>
+      <div v-else class="relative flex items-center justify-end gap-2">
+        <TransparentButton @click="menuOpen = !menuOpen">
+          <Menu class="h-4 w-4" />
+          <span>Меню</span>
+        </TransparentButton>
 
-          <div
-            v-if="menuOpen"
-            class="absolute right-0 top-[calc(100%+8px)] z-[140] min-w-[280px] rounded-[24px] border border-slate-200/90 bg-white p-2 shadow-[0_28px_80px_rgba(15,23,42,0.18)]"
+        <div
+          v-if="menuOpen"
+          class="absolute right-0 top-[calc(100%+8px)] z-[180] min-w-[280px] rounded-[var(--radius-base)] border border-[color:var(--border)] bg-white p-2 shadow-[0_20px_48px_rgba(15,23,42,0.14)]"
+        >
+          <RouterLink
+            v-for="item in sideMenuRoutes"
+            :key="item.path"
+            :to="item.path"
+            class="flex w-full items-center rounded-[var(--radius-base)] px-3 py-2 text-sm font-medium text-slate-600"
+            :class="isActive(item.path) ? 'bg-slate-900 text-white' : 'hover:bg-slate-100 hover:text-slate-950'"
+            @click="menuOpen = false"
           >
-            <RouterLink
-              v-for="item in sideMenuRoutes"
-              :key="item.path"
-              :to="item.path"
-              class="flex w-full items-center rounded-2xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
-              :class="isActive(item.path) ? 'bg-slate-900 text-white hover:bg-slate-900 hover:text-white' : ''"
-              @click="menuOpen = false"
-            >
-              {{ item.label }}
-            </RouterLink>
-          </div>
+            {{ item.label }}
+          </RouterLink>
         </div>
       </div>
+
+      <TransparentButton size="sm" @click="logout">Выйти</TransparentButton>
     </div>
 
     <div class="pointer-events-none fixed left-[-9999px] top-[-9999px] opacity-0">
@@ -61,17 +48,12 @@
         <div
           v-for="item in sideMenuRoutes"
           :key="`measure-${item.path}`"
-          class="inline-flex shrink-0 rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-2 text-sm font-medium"
+          class="inline-flex h-9 shrink-0 items-center rounded-[var(--radius-base)] border border-[color:var(--button-border)] bg-white px-3 text-sm font-medium"
         >
           {{ item.label }}
         </div>
       </div>
-      <div ref="measureMenuRef" class="mt-2 inline-flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-white/92 px-4 py-2 text-sm font-medium">
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <line x1="4" y1="12" x2="20" y2="12" />
-          <line x1="4" y1="6" x2="20" y2="6" />
-          <line x1="4" y1="18" x2="20" y2="18" />
-        </svg>
+      <div ref="measureMenuRef" class="mt-2 inline-flex h-9 items-center gap-2 rounded-[var(--radius-base)] border border-[color:var(--button-border)] bg-white px-3 text-sm font-medium">
         <span>Меню</span>
       </div>
     </div>
@@ -79,11 +61,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
+import { Menu } from 'lucide-vue-next'
+import { useRoute, useRouter } from 'vue-router'
 import { sideMenuRoutes } from '@/router/sidemenu'
+import BrandLogo from '@/shared/ui/brand/BrandLogo.vue'
+import TransparentButton from '@/shared/ui/button/TransparentButton.vue'
+import { useAuthStore } from '@/modules/auth/model/use-auth-store'
 
 const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
 const rootRef = useTemplateRef<HTMLDivElement>('rootRef')
 const brandRef = useTemplateRef<HTMLDivElement>('brandRef')
 const measureLinksRef = useTemplateRef<HTMLDivElement>('measureLinksRef')
@@ -97,7 +85,11 @@ function isActive(path: string) {
   return route.path === path || route.path.startsWith(`${path}/`)
 }
 
-const hasActiveRoute = computed(() => sideMenuRoutes.some((item) => isActive(item.path)))
+async function logout() {
+  authStore.logout()
+  menuOpen.value = false
+  await router.replace('/login')
+}
 
 function recomputeNavigationMode() {
   const rootWidth = rootRef.value?.clientWidth ?? 0
@@ -110,9 +102,9 @@ function recomputeNavigationMode() {
     return
   }
 
-  const gap = 16
-  const available = rootWidth - brandWidth - gap
-
+  const gap = 12
+  const logoutWidth = 92
+  const available = rootWidth - brandWidth - gap - logoutWidth
   showInlineLinks.value = linksWidth <= available || menuWidth > available
 
   if (showInlineLinks.value) {
